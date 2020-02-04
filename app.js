@@ -37,13 +37,32 @@ const data = {
 
 const newToDoItem = new BlogPost(data);
 
-newToDoItem.save((error) => {
-  if(error) {
-    console.log('error');
-  } else {
-    console.log('saved data!');
-  }
+// newToDoItem.save((error) => {
+//   if(error) {
+//     console.log('error');
+//   } else {
+//     console.log('saved data!');
+//   }
+// })
+ 
+
+app.get('/api', (req, res) => {
+  const data = {
+    task: "Laundry",
+    complete: "false"
+  };
+
+  // newToDoItem.find({ })
+  //   .then((data) => {
+  //     console.log('Data: ', data);
+  //   })
+  //   .catch((error) => {
+  //     console.log('error: ', error);
+  //   });
+
+  res.json(data);
 })
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');

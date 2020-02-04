@@ -10,6 +10,12 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'content-type');
+  next();
+});
 
 mongoose.connect('mongodb+srv://adminGuy9er9er:AtlasShrugged@todolist900-qitpr.mongodb.net/test?retryWrites=true&w=majority', {
   useNewUrlParser: true,
@@ -23,16 +29,14 @@ mongoose.connection.on('connected', () => {
 //Schema 
 const Schema = mongoose.Schema;
 const toDo = new Schema({
-  title:String,
-  done:String
+  title:String
 });
 
 //Model
 const BlogPost = mongoose.model('toDoList', toDo)
 
 const data = {
-  title: 'Fold Laundry',
-  done: 'test'
+  title: 'Fold Laundry'
 }
 
 const newToDoItem = new BlogPost(data);
@@ -45,22 +49,20 @@ const newToDoItem = new BlogPost(data);
 //   }
 // })
  
+app.get('/getData', (req, res) => {
+  BlogPost.find({ })
+    .then((data) => {
+      console.log('Data: ', data);
+      res.json(data);
+    })
+    .catch((error) => {
+      console.log('error: ', error);
+    });
+})
 
-app.get('/api', (req, res) => {
-  const data = {
-    task: "Laundry",
-    complete: "false"
-  };
-
-  // newToDoItem.find({ })
-  //   .then((data) => {
-  //     console.log('Data: ', data);
-  //   })
-  //   .catch((error) => {
-  //     console.log('error: ', error);
-  //   });
-
-  res.json(data);
+app.post('/logData', (req, res) => {
+    console.log('recieved')
+    console.log('req: ', req)
 })
 
 // view engine setup

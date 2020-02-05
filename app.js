@@ -12,10 +12,14 @@ var app = express();
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'content-type');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  res.header('Access-Control-Allow-Headers', 'content-type');
   next();
 });
+
+var cors=require('cors');
+
+app.use(cors({origin:true,credentials: true}));
 
 mongoose.connect('mongodb+srv://adminGuy9er9er:AtlasShrugged@todolist900-qitpr.mongodb.net/test?retryWrites=true&w=majority', {
   useNewUrlParser: true,
@@ -52,17 +56,18 @@ const newToDoItem = new BlogPost(data);
 app.get('/getData', (req, res) => {
   BlogPost.find({ })
     .then((data) => {
-      console.log('Data: ', data);
+      // console.log('Data: ', data);
       res.json(data);
     })
     .catch((error) => {
-      console.log('error: ', error);
+      // console.log('error: ', error);
     });
 })
 
 app.post('/logData', (req, res) => {
-    console.log('recieved')
-    console.log('req: ', req)
+    console.log('recieved post');
+    console.log('req: ', req.body);
+    res.send('recieved post request');
 })
 
 // view engine setup

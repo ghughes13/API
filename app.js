@@ -20,6 +20,9 @@ app.use(function(req, res, next) {
 var cors=require('cors');
 
 app.use(cors({origin:true,credentials: true}));
+// app.use(bodyParser.json()); // <--- Here
+// app.use(bodyParser.urlencoded({extended: true}));
+
 
 mongoose.connect('mongodb+srv://adminGuy9er9er:AtlasShrugged@todolist900-qitpr.mongodb.net/test?retryWrites=true&w=majority', {
   useNewUrlParser: true,
@@ -39,37 +42,6 @@ const toDo = new Schema({
 //Model
 const BlogPost = mongoose.model('toDoList', toDo)
 
-const data = {
-  title: 'Fold Laundry'
-}
-
-const newToDoItem = new BlogPost(data);
-
-// newToDoItem.save((error) => {
-//   if(error) {
-//     console.log('error');
-//   } else {
-//     console.log('saved data!');
-//   }
-// })
- 
-app.get('/getData', (req, res) => {
-  BlogPost.find({ })
-    .then((data) => {
-      // console.log('Data: ', data);
-      res.json(data);
-    })
-    .catch((error) => {
-      // console.log('error: ', error);
-    });
-})
-
-app.post('/logData', (req, res) => {
-    console.log('recieved post');
-    console.log('req: ', req.body);
-    res.send('recieved post request');
-})
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -82,6 +54,40 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
+
+//Custom Routes
+app.get('/getData', (req, res) => { //ROUTE TO GET INITIAL LIST FROM DB
+  BlogPost.find({ })
+    .then((data) => {
+      // console.log('Data: ', data);
+      res.json(data);
+    })
+    .catch((error) => {
+      // console.log('error: ', error);
+    });
+})
+
+app.post('/addNew', function(req, res) {  //ROUTE TO ADD NEW ITEM
+    console.log('recieved post');
+    console.log(req.body.title);
+
+    let data = {
+      title: req.body.title
+    }
+    
+    const newToDoItem = new BlogPost(data);
+    
+    newToDoItem.save((error) => {
+      if(error) {
+        console.log('error');
+      } else {
+        console.log('saved data!');
+      }
+    })
+
+    res.sendStatus(200);
+})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

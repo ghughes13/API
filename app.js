@@ -69,14 +69,8 @@ app.get('/getData', (req, res) => { //ROUTE TO GET INITIAL LIST FROM DB
 })
 
 app.post('/addNew', function(req, res) {  //ROUTE TO ADD NEW ITEM
-    console.log('recieved post');
-    console.log(req.body.title);
-
-    let data = {
-      title: req.body.title
-    }
     
-    const newToDoItem = new BlogPost(data);
+    const newToDoItem = new BlogPost({ title: req.body.title });
     
     newToDoItem.save((error) => {
       if(error) {
@@ -87,6 +81,34 @@ app.post('/addNew', function(req, res) {  //ROUTE TO ADD NEW ITEM
     })
 
     res.sendStatus(200);
+})
+
+app.delete('/delItem', function(req, res) {
+  console.log("delete request recieved");
+  console.log(req.body.delThis)
+
+  BlogPost.findByIdAndRemove((req.body.delThis))
+  .exec()
+  .then(() => {
+    res.sendStatus(200);
+  })
+  .catch((error) => {
+    console.log('error, ', error);
+  })
+})
+
+app.put('/updateItem', function(req, res) {
+  console.log("Update request recieved");
+  console.log(req.body.updateThis)
+
+  BlogPost.findByIdAndUpdate((req.body.delThis))
+  .exec()
+  .then(() => {
+    res.sendStatus(200);
+  })
+  .catch((error) => {
+    console.log('error, ', error);
+  })
 })
 
 // catch 404 and forward to error handler

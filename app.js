@@ -59,13 +59,15 @@ app.use('/users', usersRouter);
 //Custom Routes
 app.get('/getData', (req, res) => { //ROUTE TO GET INITIAL LIST FROM DB
   BlogPost.find({ })
-    .then((data) => {
-      // console.log('Data: ', data);
-      res.json(data);
-    })
-    .catch((error) => {
-      // console.log('error: ', error);
-    });
+  .exec()
+  .then(console.log(BlogPost))
+  .then((data) => {
+    // console.log('Data: ', data);
+    res.json(data);
+  })
+  .catch((error) => {
+    // console.log('error: ', error);
+  });
 })
 
 app.post('/addNew', function(req, res) {  //ROUTE TO ADD NEW ITEM
@@ -99,9 +101,9 @@ app.delete('/delItem', function(req, res) {
 
 app.put('/updateItem', function(req, res) {
   console.log("Update request recieved");
-  console.log(req.body.updateThis)
+  console.log(req.body.editThis)
 
-  BlogPost.findByIdAndUpdate((req.body.delThis))
+  BlogPost.findByIdAndUpdate(req.body.editThis, { title: req.body.newText })
   .exec()
   .then(() => {
     res.sendStatus(200);

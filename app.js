@@ -42,6 +42,18 @@ const toDo = new Schema({
 //Model
 const BlogPost = mongoose.model('toDoList', toDo)
 
+let refreshTheList = () => {
+  BlogPost.find({ })
+  .then(console.log(BlogPost))
+  .then((data) => {
+    console.log('Data: ', data);
+    res.json(data);
+  })
+  .catch((error) => {
+    console.log('error, ', error);
+  })
+}
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -62,7 +74,7 @@ app.get('/getData', (req, res) => { //ROUTE TO GET INITIAL LIST FROM DB
   .exec()
   .then(console.log(BlogPost))
   .then((data) => {
-    // console.log('Data: ', data);
+    console.log('Data: ', data);
     res.json(data);
   })
   .catch((error) => {
@@ -89,14 +101,7 @@ app.delete('/delItem', function(req, res) {
   console.log("delete request recieved");
   console.log(req.body.delThis)
 
-  BlogPost.findByIdAndRemove((req.body.delThis))
-  .exec()
-  .then(() => {
-    res.sendStatus(200);
-  })
-  .catch((error) => {
-    console.log('error, ', error);
-  })
+  BlogPost.findByIdAndRemove((req.body.delThis)).exec().then(refreshTheList())
 })
 
 app.put('/updateItem', function(req, res) {

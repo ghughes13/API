@@ -77,7 +77,7 @@ app.get('/getData', (req, res) => { //ROUTE TO GET INITIAL LIST FROM DB
     console.log('Data: ', data);
     res.json(data);
   })
-  .catch((error) => {
+  .catch(error => {
     // console.log('error: ', error);
   });
 })

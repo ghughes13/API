@@ -20,9 +20,6 @@ app.use(function(req, res, next) {
 var cors=require('cors');
 
 app.use(cors({origin:true,credentials: true}));
-// app.use(bodyParser.json()); // <--- Here
-// app.use(bodyParser.urlencoded({extended: true}));
-
 
 mongoose.connect('mongodb+srv://adminGuy9er9er:AtlasShrugged@todolist900-qitpr.mongodb.net/test?retryWrites=true&w=majority', {
   useNewUrlParser: true,
@@ -42,18 +39,6 @@ const toDo = new Schema({
 //Model
 const BlogPost = mongoose.model('toDoList', toDo)
 
-let refreshTheList = () => {
-  BlogPost.find({ })
-  .then(console.log(BlogPost))
-  .then((data) => {
-    console.log('Data: ', data);
-    res.json(data);
-  })
-  .catch((error) => {
-    console.log('error, ', error);
-  })
-}
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -72,13 +57,11 @@ app.use('/users', usersRouter);
 app.get('/getData', (req, res) => { //ROUTE TO GET INITIAL LIST FROM DB
   BlogPost.find({ })
   .exec()
-  .then(console.log(BlogPost))
   .then((data) => {
-    console.log('Data: ', data);
     res.json(data);
   })
   .catch(error => {
-    // console.log('error: ', error);
+    console.log('error: ', error);
   });
 })
 
@@ -97,24 +80,29 @@ app.post('/addNew', function(req, res) {  //ROUTE TO ADD NEW ITEM
     res.sendStatus(200);
 })
 
-app.delete('/delItem', function(req, res) {
-  console.log("delete request recieved");
-  console.log(req.body.delThis)
 
-  BlogPost.findByIdAndRemove((req.body.delThis)).exec().then(refreshTheList())
+
+
+app.delete('/delItem', function(req, res) {
+  BlogPost.findByIdAndDelete((req.body.delThis)).exec(() => {
+    BlogPost.find({ }).exec((err, data) => {
+      console.log(data);
+      res.json(data);
+      console.log('sent updated list')
+    });
+  })
 })
 
-app.put('/updateItem', function(req, res) {
-  console.log("Update request recieved");
-  console.log(req.body.editThis)
 
-  BlogPost.findByIdAndUpdate(req.body.editThis, { title: req.body.newText })
-  .exec()
-  .then(() => {
-    res.sendStatus(200);
-  })
-  .catch((error) => {
-    console.log('error, ', error);
+
+
+app.put('/updateItem', function(req, res) {
+  BlogPost.findByIdAndUpdate(req.body.editThis, { title: req.body.newText }).exec(() => {
+    BlogPost.find({ }).exec((err, data) => {
+      console.log(data)
+      res.json(data);
+      console.log('sent response')
+    })
   })
 })
 

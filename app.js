@@ -36,14 +36,16 @@ const toDoListSchema = new Schema({
   task:String
 });
 
-const dailyToDoSchema = new Schema({
+const repeatableListSchema = new Schema({
   task:String,
   complete:Boolean
 });
 
-//Model
+//Models
 const toDoListModel = mongoose.model('toDoList', toDoListSchema)
-const dailyToDoListModel = mongoose.model('dailytodo', dailyToDoSchema)
+const dailyListModel = mongoose.model('dailytodo', repeatableListSchema)
+const weeklyListModel = mongoose.model('weeklytodo', repeatableListSchema)
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -59,6 +61,8 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 
+
+
 //Custom Routes
 app.get('/getToDoList', (req, res) => { //ROUTE TO GET INITIAL LIST FROM DB
   toDoListModel.find({ })
@@ -72,7 +76,7 @@ app.get('/getToDoList', (req, res) => { //ROUTE TO GET INITIAL LIST FROM DB
 })
 
 app.get('/getDailyToDoList', (req, res) => { //ROUTE TO GET INITIAL LIST FROM DB
-  dailyToDoListModel.find({ })
+  dailyListModel.find({ })
   .exec()
   .then((data) => {
     console.log(data);
@@ -82,6 +86,8 @@ app.get('/getDailyToDoList', (req, res) => { //ROUTE TO GET INITIAL LIST FROM DB
     console.log('error: ', error);
   });
 })
+
+
 
 app.post('/addNewDaily', function(req, res) {  //ROUTE TO ADD NEW ITEM TO DAILY TODO
   console.log(req.body.task, req.body.complete);
@@ -108,6 +114,8 @@ app.post('/addNew', function(req, res) {  //ROUTE TO ADD NEW ITEM
     res.sendStatus(200);
 })
 
+
+
 app.delete('/delItem', function(req, res) {
   toDoListModel.findByIdAndDelete((req.body.delThis)).exec(() => {
     toDoListModel.find({ }).exec((err, data) => {
@@ -117,6 +125,8 @@ app.delete('/delItem', function(req, res) {
     });
   })
 })
+
+
 
 app.put('/updateItem', function(req, res) {
   toDoListModel.findByIdAndUpdate(req.body.editThis, { task: req.body.newText }).exec(() => {
@@ -130,12 +140,14 @@ app.put('/updateItem', function(req, res) {
 
 app.put('/updateDailyItem', function(req, res) {
   console.log(req.body.editThis)
-  dailyToDoListModel.findByIdAndUpdate({ _id: req.body.editThis }, { complete: true }).exec(() => {
-    dailyToDoListModel.find({ }).exec((err, data) => {
+  dailyListModel.findByIdAndUpdate({ _id: req.body.editThis }, { complete: true }).exec(() => {
+    dailyListModel.find({ }).exec((err, data) => {
       res.json(data);
     })
   })
 })
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -153,16 +165,21 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-const resetDailyToDoList = () => {
-  dailyToDoListModel.find({ }).exec((err, data) => {
-    data.forEach(item => {
-      dailyToDoListModel.findByIdAndUpdate({ _id: item.id }, { complete: false }).exec();
-    })
-  })
-}
-
 var CronJob = require('cron').CronJob;
-var job = new CronJob('0 5 * * *', resetDailyToDoList(), null, true, 'America/Chicago');
+var job = new CronJob('0 0 0 * * *',
+  () => {
+    console.log('chroned')
+    dailyListModel.find({ }).exec((err, data) => {
+      data.forEach(item => {
+        dailyListModel.findByIdAndUpdate({ _id: item.id }, { complete: false }).exec();
+      })
+    })
+  },
+ ()  => console.log("error"),
+ true,
+ 'America/Chicago',
+ {},
+ false);
 job.start();
 
 module.exports = app;

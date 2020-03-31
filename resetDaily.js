@@ -27,8 +27,13 @@ dailyListModel.find({ }).exec((err, data) => {
   data.forEach(item => {
     dailyListModel.findByIdAndUpdate({ _id: item.id }, { complete: false }).exec();
   })
+  console.log('=========================')
   console.log('list reset')
+  console.log('=========================')
 })
+
+console.log('script ran');
+
 } catch(error) {
   console.log(error);
 }

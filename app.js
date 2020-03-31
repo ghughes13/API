@@ -25,9 +25,7 @@ mongoose.connect('mongodb+srv://adminGuy9er9er:AtlasShrugged@todolist900-qitpr.m
   useUnifiedTopology: true
 });
 
-mongoose.connection.on('connected', () => {
-  console.log('connected to DB!!!');
-})
+mongoose.connection.on('connected', () => {})
 
 //Schema 
 const Schema = mongoose.Schema;
@@ -61,8 +59,6 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 
-
-
 //Custom Routes
 app.get('/getToDoList', (req, res) => { //ROUTE TO GET INITIAL LIST FROM DB
   toDoListModel.find({ })
@@ -79,7 +75,6 @@ app.get('/getDailyToDoList', (req, res) => { //ROUTE TO GET INITIAL LIST FROM DB
   dailyListModel.find({ })
   .exec()
   .then((data) => {
-    console.log(data);
     res.json(data);
   })
   .catch(error => {
@@ -119,9 +114,7 @@ app.post('/addNew', function(req, res) {  //ROUTE TO ADD NEW ITEM
 app.delete('/delItem', function(req, res) {
   toDoListModel.findByIdAndDelete((req.body.delThis)).exec(() => {
     toDoListModel.find({ }).exec((err, data) => {
-      console.log(data);
       res.json(data);
-      console.log('sent updated list')
     });
   })
 })
@@ -131,15 +124,12 @@ app.delete('/delItem', function(req, res) {
 app.put('/updateItem', function(req, res) {
   toDoListModel.findByIdAndUpdate(req.body.editThis, { task: req.body.newText }).exec(() => {
     toDoListModel.find({ }).exec((err, data) => {
-      console.log(data)
       res.json(data);
-      console.log('sent response')
     })
   })
 })
 
 app.put('/updateDailyItem', function(req, res) {
-  console.log(req.body.editThis)
   dailyListModel.findByIdAndUpdate({ _id: req.body.editThis }, { complete: true }).exec(() => {
     dailyListModel.find({ }).exec((err, data) => {
       res.json(data);
@@ -166,9 +156,8 @@ app.use(function(err, req, res, next) {
 });
 
 var CronJob = require('cron').CronJob;
-var job = new CronJob('0 0 0 * * *',
+var job = new CronJob('0 0 * * *',
   () => {
-    console.log('chroned')
     dailyListModel.find({ }).exec((err, data) => {
       data.forEach(item => {
         dailyListModel.findByIdAndUpdate({ _id: item.id }, { complete: false }).exec();

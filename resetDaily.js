@@ -1,38 +1,36 @@
 const express = require('express');
 const mongoose = require('mongoose');
 
-const app = express();
-
 try {
-mongoose.connect('mongodb+srv://adminGuy9er9er:AtlasShrugged@todolist900-qitpr.mongodb.net/test?retryWrites=true&w=majority', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
+  mongoose.connect('mongodb+srv://adminGuy9er9er:AtlasShrugged@todolist900-qitpr.mongodb.net/test?retryWrites=true&w=majority', {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+  });
 
-mongoose.connection.on('connected', () => {})
+  mongoose.connection.on('connected', () => {})
 
-//Schema 
-const Schema = mongoose.Schema;
+  //Schema 
+  const Schema = mongoose.Schema;
 
-const repeatableListSchema = new Schema({
-  task:String,
-  complete:Boolean
-});
+  const repeatableListSchema = new Schema({
+    task:String,
+    complete:Boolean
+  });
 
-//Models
-const dailyListModel = mongoose.model('dailytodo', repeatableListSchema)
-const weeklyListModel = mongoose.model('weeklytodo', repeatableListSchema)
+  //Models
+  const dailyListModel = mongoose.model('dailytodo', repeatableListSchema)
+  const weeklyListModel = mongoose.model('weeklytodo', repeatableListSchema)
 
-dailyListModel.find({ }).exec((err, data) => {
-  data.forEach(item => {
-    dailyListModel.findByIdAndUpdate({ _id: item.id }, { complete: false }).exec();
+  dailyListModel.find({ }).exec((err, data) => {
+    data.forEach(item => {
+      dailyListModel.findByIdAndUpdate({ _id: item.id }, { complete: false }).exec();
+    })
+    console.log('=========================')
+    console.log('list reset')
+    console.log('=========================')
   })
-  console.log('=========================')
-  console.log('list reset')
-  console.log('=========================')
-})
 
-console.log('script ran');
+  console.log('script ran');
 
 } catch(error) {
   console.log(error);

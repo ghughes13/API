@@ -21,8 +21,8 @@ const cors=require('cors');
 app.use(cors({origin:true,credentials: true}));
 
 mongoose.connect('mongodb+srv://adminGuy9er9er:AtlasShrugged@todolist900-qitpr.mongodb.net/test?retryWrites=true&w=majority', {
+  useUnifiedTopology: true,
   useNewUrlParser: true,
-  useUnifiedTopology: true
 });
 
 mongoose.connection.on('connected', () => {})

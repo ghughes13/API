@@ -60,7 +60,7 @@ app.use('/users', usersRouter);
 
 //Custom Routes
 app.post('/validateLogin', function(req, res) {  //Validate User Login
-  if(process.env.username === req.body.username && pprocess.env.password === req.body.password) {
+  if(process.env.username === req.body.username && process.env.password === req.body.password) {
     res.json(true);
   }
   res.json(false);

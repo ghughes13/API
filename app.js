@@ -58,8 +58,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-
 //Custom Routes
+app.post('/validateLogin', function(req, res) {  //Validate User Login
+  if(process.env.username === req.body.username && pprocess.env.password === req.body.password) {
+    res.json(true);
+  }
+  res.json(false);
+})
+
 app.get('/getToDoList', (req, res) => { //ROUTE TO GET INITIAL LIST FROM DB
   toDoListModel.find({ })
   .exec()

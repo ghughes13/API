@@ -60,7 +60,7 @@ app.use('/users', usersRouter);
 
 //Custom Routes
 app.post('/validateLogin', function(req, res) {  //Validate User Login
-  if(process.env.username === req.body.username && process.env.password === req.body.password) {
+  if("ghughes13" === req.body.username && "testPassword1" === req.body.password) {
     res.json(true);
   }
   res.json(false);
@@ -160,21 +160,5 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
-var CronJob = require('cron').CronJob;
-var job = new CronJob('0 0 * * *',
-  () => {
-    dailyListModel.find({ }).exec((err, data) => {
-      data.forEach(item => {
-        dailyListModel.findByIdAndUpdate({ _id: item.id }, { complete: false }).exec();
-      })
-    })
-  },
- ()  => console.log("error"),
- true,
- 'America/Chicago',
- {},
- false);
-job.start();
 
 module.exports = app;

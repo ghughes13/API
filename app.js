@@ -77,7 +77,7 @@ app.get('/getToDoList', (req, res) => { //ROUTE TO GET INITIAL LIST FROM DB
   });
 })
 
-app.get('/getRepeatableList', (req, res) => { //ROUTE TO GET INITIAL LIST FROM DB
+app.post('/getRepeatableList', (req, res) => { //ROUTE TO GET INITIAL LIST FROM DB
   if(req.body.listToUpdate == "daily") {
     dailyListModel.find({ })
     .exec()

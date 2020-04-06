@@ -77,21 +77,31 @@ app.get('/getToDoList', (req, res) => { //ROUTE TO GET INITIAL LIST FROM DB
   });
 })
 
-app.get('/getDailyToDoList', (req, res) => { //ROUTE TO GET INITIAL LIST FROM DB
-  dailyListModel.find({ })
-  .exec()
-  .then((data) => {
-    res.json(data);
-  })
-  .catch(error => {
-    console.log('error: ', error);
-  });
+app.get('/getRepeatableList', (req, res) => { //ROUTE TO GET INITIAL LIST FROM DB
+  if(req.body.listToUpdate == "daily") {
+    dailyListModel.find({ })
+    .exec()
+    .then((data) => {
+      res.json(data);
+    })
+    .catch(error => {
+      console.log('error: ', error);
+    });
+  } else if(req.body.listToUpdate == "weekly") {
+    weeklyListModel.find({ })
+    .exec()
+    .then((data) => {
+      res.json(data);
+    })
+    .catch(error => {
+      console.log('error: ', error);
+    });
+  }
 })
 
 
 
 app.post('/addNewDaily', function(req, res) {  //ROUTE TO ADD NEW ITEM TO DAILY TODO
-  console.log(req.body.task, req.body.complete);
   const newToDoItem = new dailyToDoListModel({ task: req.body.task, complete: req.body.complete });
   newToDoItem.save((error) => {
     if(error) {
@@ -135,12 +145,16 @@ app.put('/updateItem', function(req, res) {
   })
 })
 
-app.put('/updateDailyItem', function(req, res) {
-  dailyListModel.findByIdAndUpdate({ _id: req.body.editThis }, { complete: true }).exec(() => {
-    dailyListModel.find({ }).exec((err, data) => {
-      res.json(data);
+app.put('/markItemComplete', function(req, res) {
+  // if(req.body.listToUpdate == "daily") {
+    dailyListModel.findByIdAndUpdate({ _id: req.body.editThis }, { complete: true }).exec(() => {
+      dailyListModel.find({ }).exec((err, data) => {
+        res.json(data);
+      })
     })
-  })
+  // } else if (req.body.listToUpdate == "weekly" {
+
+  // }
 })
 
 

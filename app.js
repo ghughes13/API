@@ -8,17 +8,10 @@ const mongoose = require('mongoose');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
+const cors = require('cors')
 const app = express();
 
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-  res.header('Access-Control-Allow-Headers', 'content-type');
-  next();
-});
-
-const cors=require('cors');
-app.use(cors({origin:true,credentials: true}));
+app.use(cors());
 
 mongoose.connect('mongodb+srv://adminGuy9er9er:AtlasShrugged@todolist900-qitpr.mongodb.net/test?retryWrites=true&w=majority', {
   useUnifiedTopology: true,
@@ -42,7 +35,7 @@ const repeatableListSchema = new Schema({
 //Models
 const toDoListModel = mongoose.model('toDoList', toDoListSchema)
 const dailyListModel = mongoose.model('dailytodo', repeatableListSchema)
-const weeklyListModel = mongoose.model('weeklytodo', repeatableListSchema)
+const weeklyListModel = mongoose.model('weeklies', repeatableListSchema)
 
 
 // view engine setup
@@ -59,7 +52,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 //Custom Routes
-app.post('/validateLogin', function(req, res) {  //Validate User Login
+app.post('/validateLogin', (req, res) => {  //Validate User Login
   if("ghughes13" === req.body.username && "testPassword1" === req.body.password) {
     res.json(true);
   }
@@ -77,8 +70,8 @@ app.get('/getToDoList', (req, res) => { //ROUTE TO GET INITIAL LIST FROM DB
   });
 })
 
-app.post('/getRepeatableList', (req, res) => { //ROUTE TO GET INITIAL LIST FROM DB
-  if(req.body.listToUpdate == "daily") {
+app.post('/getRepeatableList', (req, res) => { //ROUTE TO GET REPEATABLE LIST FROM DB
+  if(req.body.listToGet === "daily") {
     dailyListModel.find({ })
     .exec()
     .then((data) => {
@@ -87,7 +80,7 @@ app.post('/getRepeatableList', (req, res) => { //ROUTE TO GET INITIAL LIST FROM 
     .catch(error => {
       console.log('error: ', error);
     });
-  } else if(req.body.listToUpdate == "weekly") {
+  } else if(req.body.listToGet === "weekly") {
     weeklyListModel.find({ })
     .exec()
     .then((data) => {
@@ -97,20 +90,6 @@ app.post('/getRepeatableList', (req, res) => { //ROUTE TO GET INITIAL LIST FROM 
       console.log('error: ', error);
     });
   }
-})
-
-
-
-app.post('/addNewDaily', function(req, res) {  //ROUTE TO ADD NEW ITEM TO DAILY TODO
-  const newToDoItem = new dailyToDoListModel({ task: req.body.task, complete: req.body.complete });
-  newToDoItem.save((error) => {
-    if(error) {
-      console.log('error');
-    } else {
-      console.log('saved data!');
-    }
-  })
-  res.sendStatus(200);
 })
 
 app.post('/addNew', function(req, res) {  //ROUTE TO ADD NEW ITEM
@@ -125,8 +104,6 @@ app.post('/addNew', function(req, res) {  //ROUTE TO ADD NEW ITEM
     res.sendStatus(200);
 })
 
-
-
 app.delete('/delItem', function(req, res) {
   toDoListModel.findByIdAndDelete((req.body.delThis)).exec(() => {
     toDoListModel.find({ }).exec((err, data) => {
@@ -134,8 +111,6 @@ app.delete('/delItem', function(req, res) {
     });
   })
 })
-
-
 
 app.put('/updateItem', function(req, res) {
   toDoListModel.findByIdAndUpdate(req.body.editThis, { task: req.body.newText }).exec(() => {
@@ -146,15 +121,15 @@ app.put('/updateItem', function(req, res) {
 })
 
 app.put('/markItemComplete', function(req, res) {
-  // if(req.body.listToUpdate == "daily") {
+  if(req.body.listToUpdate == "daily") {
     dailyListModel.findByIdAndUpdate({ _id: req.body.editThis }, { complete: true }).exec(() => {
       dailyListModel.find({ }).exec((err, data) => {
         res.json(data);
       })
     })
-  // } else if (req.body.listToUpdate == "weekly" {
+  } else if (req.body.listToUpdate == "weekly") {
 
-  // }
+  }
 })
 
 
@@ -176,3 +151,31 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
+
+
+
+//Unused Routs to add to daily or weekly repeatable lists
+
+// app.get('/addNewWeekly', function(req, res) {  //ROUTE TO ADD NEW ITEM TO DAILY TODO
+//   const newToDoItem = new weeklyListModel({ task: 'vacuum', complete: false });
+//   newToDoItem.save((error) => {
+//     if(error) {
+//       console.log('error');
+//     } else {
+//       console.log('saved data!');
+//     }
+//   })
+//   res.sendStatus(200);
+// })
+
+// app.post('/addNewDaily', function(req, res) {  //ROUTE TO ADD NEW ITEM TO DAILY TODO
+//   const newToDoItem = new dailyToDoListModel({ task: req.body.task, complete: req.body.complete });
+//   newToDoItem.save((error) => {
+//     if(error) {
+//       console.log('error');
+//     } else {
+//       console.log('saved data!');
+//     }
+//   })
+//   res.sendStatus(200);
+// })

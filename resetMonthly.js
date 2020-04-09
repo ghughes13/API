@@ -17,11 +17,11 @@ try {
   });
 
   //Models
-  const dailyListModel = mongoose.model('dailytodo', repeatableListSchema)
+  const monthlyListModel = mongoose.model('monthly', repeatableListSchema)
 
-  dailyListModel.find({ }).exec((err, data) => {
+  monthlyListModel.find({ }).exec((err, data) => {
     data.forEach(item => {
-      dailyListModel.findByIdAndUpdate({ _id: item.id }, { complete: false }).exec();
+      monthlyListModel.findByIdAndUpdate({ _id: item.id }, { complete: false }).exec();
     })
     console.log('=========================')
     console.log('list reset')

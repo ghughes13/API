@@ -17,11 +17,11 @@ try {
   });
 
   //Models
-  const dailyListModel = mongoose.model('dailytodo', repeatableListSchema)
+  const weeklyListModel = mongoose.model('weeklies', repeatableListSchema)
 
-  dailyListModel.find({ }).exec((err, data) => {
+  weeklyListModel.find({ }).exec((err, data) => {
     data.forEach(item => {
-      dailyListModel.findByIdAndUpdate({ _id: item.id }, { complete: false }).exec();
+      weeklyListModel.findByIdAndUpdate({ _id: item.id }, { complete: false }).exec();
     })
     console.log('=========================')
     console.log('list reset')
@@ -33,4 +33,3 @@ try {
 } catch(error) {
   console.log(error);
 }
-

@@ -13,7 +13,6 @@ const app = express();
 
 const username = process.env.USERNAME;
 const pass = process.env.PASSWORD;
-const bpUrl;
 
 app.use(cors());
 

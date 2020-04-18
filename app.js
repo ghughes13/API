@@ -54,6 +54,7 @@ app.use('/users', usersRouter);
 
 //Custom Routes
 app.post('/validateLogin', (req, res) => {  //Validate User Login
+  console.log(process.env.USERNAME, process.env.PASSWORD)
   if(process.env.USERNAME === req.body.username && process.env.PASSWORD === req.body.password) {
     res.json(true);
   } else {

@@ -11,6 +11,10 @@ const usersRouter = require('./routes/users');
 const cors = require('cors')
 const app = express();
 
+const username = process.env.USERNAME;
+const pass = process.env.PASSWORD;
+const bpUrl;
+
 app.use(cors());
 
 mongoose.connect('mongodb+srv://adminGuy9er9er:AtlasShrugged@todolist900-qitpr.mongodb.net/test?retryWrites=true&w=majority', {
@@ -54,8 +58,8 @@ app.use('/users', usersRouter);
 
 //Custom Routes
 app.post('/validateLogin', (req, res) => {  //Validate User Login
-  console.log(process.env.USERNAME, process.env.PASSWORD)
-  if(process.env.USERNAME === req.body.username && process.env.PASSWORD === req.body.password) {
+  console.log(username, pass)
+  if(username === req.body.username && pass === req.body.password) {
     res.json(true);
   } else {
     res.json(false);

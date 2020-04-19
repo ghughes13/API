@@ -11,10 +11,6 @@ const usersRouter = require('./routes/users');
 const cors = require('cors')
 const app = express();
 
-const username = process.env.USERNAME;
-const pass = process.env.PASSWORD;
-console.log(process.env.PASSWORD)
-
 
 app.use(cors());
 
@@ -60,7 +56,7 @@ app.use('/users', usersRouter);
 //Custom Routes
 app.post('/validateLogin', (req, res) => {  //Validate User Login
   console.log(username, pass)
-  if(username === req.body.username && pass === req.body.password) {
+  if(process.env.USERNAME === req.body.username && process.env.PASSWORD === req.body.password) {
     res.json(true);
   } else {
     res.json(false);

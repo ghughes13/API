@@ -13,11 +13,11 @@ const app = express();
 
 const pass = process.env.PASSWORD
 const user = process.env.USERNAME
-const DBURL = process.env.DBURL
+const dbpass = process.env.DBPASS
 
 app.use(cors());
 
-mongoose.connect(DBURL, {
+mongoose.connect('mongodb+srv://' + dbpass + ':AtlasShrugged@todolist900-qitpr.mongodb.net/test?retryWrites=true&w=majority', {
   useUnifiedTopology: true,
   useNewUrlParser: true,
 });

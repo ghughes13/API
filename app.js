@@ -11,10 +11,13 @@ const usersRouter = require('./routes/users');
 const cors = require('cors')
 const app = express();
 
+const pass = process.env.PASSWORD
+const user = process.env.USERNAME
+const DBURL = process.env.DBURL
 
 app.use(cors());
 
-mongoose.connect('mongodb+srv://adminGuy9er9er:AtlasShrugged@todolist900-qitpr.mongodb.net/test?retryWrites=true&w=majority', {
+mongoose.connect(DBURL, {
   useUnifiedTopology: true,
   useNewUrlParser: true,
 });
@@ -55,8 +58,7 @@ app.use('/users', usersRouter);
 
 //Custom Routes
 app.post('/validateLogin', (req, res) => {  //Validate User Login
-  console.log(username, pass)
-  if(process.env.USERNAME === req.body.username && process.env.PASSWORD === req.body.password) {
+  if(user === req.body.username && pass === req.body.password) {
     res.json(true);
   } else {
     res.json(false);

@@ -41,7 +41,7 @@ const toDoListModel = mongoose.model('toDoList', toDoListSchema)
 const dailyListModel = mongoose.model('dailytodo', repeatableListSchema)
 const weeklyListModel = mongoose.model('weeklies', repeatableListSchema)
 const monthlyListModel = mongoose.model('monthlies', repeatableListSchema)
-const quarterlyListModel = mongoose.model('quarterly', repeatableListSchema)
+const quarterlyListModel = mongoose.model('quarterlies', repeatableListSchema)
 
 
 // view engine setup
@@ -78,7 +78,6 @@ app.get('/getToDoList', (req, res) => { //ROUTE TO GET INITIAL LIST FROM DB
 })
 
 app.post('/getRepeatableList', (req, res) => { //ROUTE TO GET REPEATABLE LIST FROM DB
-  console.log(req.body.listToGet)
   if(req.body.listToGet === "daily") {
     dailyListModel.find({ })
     .exec()
@@ -147,9 +146,7 @@ app.put('/updateItem', function(req, res) {
 })
 
 app.put('/markItemComplete', function(req, res) {
-  console.log(req.body.listToUpdate)
   if(req.body.listToUpdate == "daily") {
-    console.log('parking daily item complete')
     dailyListModel.findByIdAndUpdate({ _id: req.body.editThis }, { complete: true }).exec(() => {
       dailyListModel.find({ }).exec((err, data) => {
         res.json(data);
@@ -224,6 +221,19 @@ module.exports = app;
 
 // app.get('/addNewMonthly', function(req, res) {  //ROUTE TO ADD NEW ITEM TO DAILY TODO
 //   const newToDoItem = new monthlyListModel({ task: req.body.task, complete: req.body.complete });
+//   newToDoItem.save((error) => {
+//     if(error) {
+//       console.log('error');
+//     } else {
+//       console.log('saved data!');
+//     }
+//   })
+//   res.sendStatus(200);
+// })
+
+// app.get('/addNewQuarterly', function(req, res) {  //ROUTE TO ADD NEW ITEM TO DAILY TODO
+//   console.log('hit route');
+//   const newToDoItem = new quarterlyListModel({ task: req.body.task, complete: req.body.complete });
 //   newToDoItem.save((error) => {
 //     if(error) {
 //       console.log('error');

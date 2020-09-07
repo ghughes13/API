@@ -40,7 +40,8 @@ const repeatableListSchema = new Schema({
 const toDoListModel = mongoose.model('toDoList', toDoListSchema)
 const dailyListModel = mongoose.model('dailytodo', repeatableListSchema)
 const weeklyListModel = mongoose.model('weeklies', repeatableListSchema)
-const monthlyListModel = mongoose.model('monthly', repeatableListSchema)
+const monthlyListModel = mongoose.model('monthlies', repeatableListSchema)
+const quarterlyListModel = mongoose.model('quarterly', repeatableListSchema)
 
 
 // view engine setup
@@ -105,6 +106,15 @@ app.post('/getRepeatableList', (req, res) => { //ROUTE TO GET REPEATABLE LIST FR
     .catch(error => {
       console.log('error: ', error);
     });
+  } else if(req.body.listToGet === "quarterly") {
+    quarterlyListModel.find({ })
+    .exec()
+    .then((data) => {
+      res.json(data);
+    })
+    .catch(error => {
+      console.log('error: ', error);
+    });
   }
 })
 
@@ -154,6 +164,12 @@ app.put('/markItemComplete', function(req, res) {
   } else if (req.body.listToUpdate == "monthly") {
     monthlyListModel.findByIdAndUpdate({ _id: req.body.editThis }, { complete: true }).exec(() => {
       monthlyListModel.find({ }).exec((err, data) => {
+        res.json(data);
+      })
+    })
+  } else if (req.body.listToUpdate == "quarterly") {
+    quarterlyListModel.findByIdAndUpdate({ _id: req.body.editThis }, { complete: true }).exec(() => {
+      quarterlyListModel.find({ }).exec((err, data) => {
         res.json(data);
       })
     })

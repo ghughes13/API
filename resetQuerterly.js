@@ -1,5 +1,8 @@
 const mongoose = require("mongoose");
 
+const dbpass = process.env.DBPASS;
+const dbUser = process.env.DBUSER;
+
 try {
   mongoose.connect(
     `mongodb+srv://${dbpass}:${dbUser}@todolist900-qitpr.mongodb.net/test?retryWrites=true&w=majority`,
@@ -11,7 +14,6 @@ try {
 
   mongoose.connection.on("connected", () => {});
 
-  //Schema
   const Schema = mongoose.Schema;
 
   const repeatableListSchema = new Schema({
@@ -19,21 +21,15 @@ try {
     complete: Boolean,
   });
 
-  //Models
-  const monthlyListModel = mongoose.model("monthly", repeatableListSchema);
+  const dailyListModel = mongoose.model("quarterlies", repeatableListSchema);
 
-  monthlyListModel.find({}).exec((err, data) => {
+  dailyListModel.find({}).exec((err, data) => {
     data.forEach((item) => {
-      monthlyListModel
+      dailyListModel
         .findByIdAndUpdate({ _id: item.id }, { complete: false })
         .exec();
     });
-    console.log("=========================");
-    console.log("list reset");
-    console.log("=========================");
   });
-
-  console.log("script ran");
 } catch (error) {
   console.log(error);
 }
